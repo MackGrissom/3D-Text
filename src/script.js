@@ -1,6 +1,14 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+
+
+
+
+
+
 
 /**
  * Base
@@ -14,20 +22,73 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+
+// axes helper
+const axesHelper = new THREE.AxesHelper()
+scene.add(axesHelper)
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
 
+
+
 /**
- * Object
+ * Fonts
  */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
+const fontLoader = new FontLoader()
+
+fontLoader.load(
+    '/fonts/helvetiker_regular.typeface.json',
+    (font) =>
+    {
+        console.log('loaded')
+    }
 )
 
-scene.add(cube)
+fontLoader.load(
+    '/fonts/helvetiker_regular.typeface.json',
+    (font) =>
+    {
+        const textGeometry = new TextGeometry(
+            "Hi, I'm Mack Grissom", 
+            {
+                font: font,
+                size: 0.5,
+                height: 0.2,
+                curveSegments: 5,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 4
+            }
+        )
+        // figuring out which coordinates need to be changed by printing bounding box in console
+textGeometry.computeBoundingBox()
+console.log(textGeometry.boundingBox)
+
+
+// centering the console 
+textGeometry.translate(
+    - textGeometry.boundingBox.max.x * 0.5,
+    - textGeometry.boundingBox.max.y * 0.5,
+    - textGeometry.boundingBox.max.z * 0.5,
+    
+)
+
+
+
+
+
+        const textMaterial = new THREE.MeshBasicMaterial(({ wireframe: true }))
+        const text = new THREE.Mesh(textGeometry, textMaterial)
+        scene.add(text)
+    }
+)
+
+const textMaterial = new THREE.MeshBasicMaterial({ wireframe: true })
+
 
 /**
  * Sizes

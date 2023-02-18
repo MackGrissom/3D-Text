@@ -17,3 +17,7 @@ body
     left: 0;
     outline: none;
 }
+ h1 {
+    color: green;
+    z-index: 1;
+ }
